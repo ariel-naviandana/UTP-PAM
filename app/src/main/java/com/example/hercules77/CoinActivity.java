@@ -72,7 +72,7 @@ public class CoinActivity extends AppCompatActivity {
         String actualResult;
 
         // AUTO-KALAH jika uang lebih dari 300.000 → hasil dipaksa jadi kebalikan dari pilihan
-        if (jumlahUang > 3000000) {
+        if (jumlahUang > 30000000) {
             actualResult = userGuess.equals("HEAD") ? "TAIL" : "HEAD";
         } else {
             // MANIPULASI PROBABILITAS BERDASARKAN HASIL SEBELUMNYA

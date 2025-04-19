@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:text="Flip Coin"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:textColor="#FFF"
             android:backgroundTint="#2196F3"
             android:textSize="18sp"
             android:padding="12dp"
