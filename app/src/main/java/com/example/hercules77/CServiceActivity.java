@@ -20,21 +20,22 @@ public class CServiceActivity extends AppCompatActivity {
         btn_website = findViewById(R.id.btn_website);
         btn_email = findViewById(R.id.btn_email);
 
-        //Intent untuk website
+        //Intent ke website
         btn_website.setOnClickListener(v -> {
             Intent websiteIntent = new Intent(Intent.ACTION_VIEW);
-            websiteIntent.setData(Uri.parse("https://s.id/bersamastopjudol"));
+//            websiteIntent.setData(Uri.parse("https://s.id/bersamastopjudol"));
+            websiteIntent.setData(Uri.parse("https://youtu.be/dQw4w9WgXcQ?si=Eck1vZ1JhfWItKIQ"));
             startActivity(websiteIntent);
         });
 
-        //Intent untuk whatsapp
+        //Intent ke whatsapp
         btn_whatsapp.setOnClickListener(v -> {
             Intent messageIntent = new Intent(Intent.ACTION_VIEW);
             messageIntent.setData(Uri.parse("https://api.whatsapp.com/send/?phone=%2B6281110015080&text&type=phone_number&app_absent=0"));
             startActivity(messageIntent);
         });
 
-        // Intent untuk email
+        // Intent ke email
         btn_email.setOnClickListener(v -> {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
             emailIntent.setData(Uri.parse("mailto:antijudol77@gmail.com"));
