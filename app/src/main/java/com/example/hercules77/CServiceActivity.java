@@ -1,24 +1,45 @@
 package com.example.hercules77;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class CServiceActivity extends AppCompatActivity {
+
+    Button btn_whatsapp, btn_website, btn_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_cservice);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        btn_whatsapp = findViewById(R.id.btn_whatsapp);
+        btn_website = findViewById(R.id.btn_website);
+        btn_email = findViewById(R.id.btn_email);
+
+        //Intent ke website
+        btn_website.setOnClickListener(v -> {
+            Intent websiteIntent = new Intent(Intent.ACTION_VIEW);
+//            websiteIntent.setData(Uri.parse("https://s.id/bersamastopjudol"));
+            websiteIntent.setData(Uri.parse("https://youtu.be/dQw4w9WgXcQ?si=Eck1vZ1JhfWItKIQ"));
+            startActivity(websiteIntent);
+        });
+
+        //Intent ke whatsapp
+        btn_whatsapp.setOnClickListener(v -> {
+            Intent messageIntent = new Intent(Intent.ACTION_VIEW);
+            messageIntent.setData(Uri.parse("https://api.whatsapp.com/send/?phone=%2B6281110015080&text&type=phone_number&app_absent=0"));
+            startActivity(messageIntent);
+        });
+
+        // Intent ke email
+        btn_email.setOnClickListener(v -> {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:antijudol77@gmail.com"));
+            startActivity(emailIntent);
         });
     }
 }
