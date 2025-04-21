@@ -31,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     private void generateMenuData(){
         homeItems.add(new HomeItem("Coin Flip", R.drawable.ic_coin, "Coin Flip Gacor"));
         homeItems.add(new HomeItem("Slot", R.drawable.ic_slot, "Slot Gacor"));
-        homeItems.add(new HomeItem("History", R.drawable.ic_back, "History Permainan"));
-        homeItems.add(new HomeItem("Customer Service", R.drawable.ic_back, "Hubungi Kami"));
+        homeItems.add(new HomeItem("History", R.drawable.ic_history, "History Permainan"));
+        homeItems.add(new HomeItem("Customer Service", R.drawable.ic_cs, "Hubungi Kami"));
     }
 }

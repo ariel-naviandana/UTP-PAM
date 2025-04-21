@@ -24,7 +24,7 @@ public class SplashActivity extends AppCompatActivity {
 
                 if (username != null) {
                     // Sudah login
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                     intent.putExtra("username", username);
                     startActivity(intent);
                 } else {
