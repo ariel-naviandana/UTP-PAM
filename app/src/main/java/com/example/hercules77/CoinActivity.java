@@ -97,7 +97,7 @@ public class CoinActivity extends AppCompatActivity {
         // Tentukan menang atau kalah
         if (userGuess.equals(actualResult)) {
             int totalMenang = jumlahUang * 2;
-            resultText.setText("Anda Menang!\nHasil: " + actualResult + "\nUang Anda menjadi: " + totalMenang);
+            resultText.setText("Anda Menang!\nHasil: " + actualResult + "\nUang yang Anda dapatkan: " + totalMenang);
             resultText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             lastResult = "WIN";
         } else {
