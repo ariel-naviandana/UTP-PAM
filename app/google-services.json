@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "42705517873",
+    "firebase_url": "https://pamfirebase-1d179-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pamfirebase-1d179",
+    "storage_bucket": "pamfirebase-1d179.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42705517873:android:ddd8ba2395727f6afd8410",
+        "android_client_info": {
+          "package_name": "com.example.hercules77"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_vVBIzCGeR_QoeR6MNApy7vPoDiwjyV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42705517873:android:103f8b8dfc2a7015fd8410",
+        "android_client_info": {
+          "package_name": "com.example.modul9"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_vVBIzCGeR_QoeR6MNApy7vPoDiwjyV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -40,10 +40,17 @@ public class LoginActivity extends AppCompatActivity {
                 editor.apply();
 
                 // Gunakan FLAG agar semua activity sebelumnya dihapus
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.putExtra("username", user);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                if (user.equals("admin")) {
+                    Intent intent = new Intent(this, HomeAdminActivity.class);
+                    intent.putExtra("username", user);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("username", user);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             } else {
                 Toast.makeText(this, "Login gagal. Coba lagi!", Toast.LENGTH_SHORT).show();
             }
