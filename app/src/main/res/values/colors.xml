@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="greenish">#4CAF50</color>
     <color name="gray">#DDDDDD</color>
+    <color name="background">#F5F5F5</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="gray_light">#EEEEEE</color>
+    <color name="gray_dark">#757575</color>
+    <color name="red">#FF0000</color>
 </resources>

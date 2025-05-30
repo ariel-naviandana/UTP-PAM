@@ -1,24 +1,66 @@
 package com.example.hercules77;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.view.View;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import com.example.hercules77.databinding.ActivityBannerBinding;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.ArrayList;
 
-public class BannerActivity extends AppCompatActivity {
+public class BannerActivity extends AppCompatActivity implements View.OnClickListener {
+    private ActivityBannerBinding binding;
+    private FirebaseFirestore db;
+    private ArrayList<Banner> bannerList;
+    private BannerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_banner);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        binding = ActivityBannerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        db = FirebaseFirestore.getInstance();
+        setupRecyclerView();
+
+        binding.btnAddBanner.setOnClickListener(this);
+    }
+
+    private void setupRecyclerView() {
+        bannerList = new ArrayList<>();
+        adapter = new BannerAdapter(bannerList, db);
+        binding.recyclerViewBanners.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewBanners.setAdapter(adapter);
+        loadBanners();
+    }
+
+    private void loadBanners() {
+        db.collection("banners").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            bannerList.clear();
+            for (var document : queryDocumentSnapshots) {
+                Banner banner = document.toObject(Banner.class);
+                banner.setId(document.getId());
+                bannerList.add(banner);
+            }
+            adapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Gagal memuat banner", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.btnAddBanner) {
+            Intent intent = new Intent(this, BannerFormActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadBanners();
     }
 }
