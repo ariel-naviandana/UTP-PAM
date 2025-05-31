@@ -1,5 +1,6 @@
 package com.example.hercules77;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,22 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new HomeAdapter(this, homeItems);
         binding.homeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.homeRecyclerView.setAdapter(adapter);
+
+        // Logout Button Click Listener
+        binding.btnLogout.setOnClickListener(v -> {
+            // TODO: lakukan logout di sini (misalnya hapus session/login status)
+            // Contoh: jika pakai SharedPreferences untuk login state
+            getSharedPreferences("login_session", MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply();
+
+            // Pindah ke halaman Login
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // agar tidak bisa kembali ke Home
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void generateMenuData(){
