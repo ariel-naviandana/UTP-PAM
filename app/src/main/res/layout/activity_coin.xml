@@ -23,7 +23,7 @@
         <EditText
             android:id="@+id/inputUang"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="Masukkan jumlah taruhan"
             android:inputType="number"
             android:background="@drawable/edittext_bg"
