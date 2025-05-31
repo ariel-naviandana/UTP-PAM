@@ -26,6 +26,7 @@ public class BannerActivity extends AppCompatActivity implements View.OnClickLis
         setupRecyclerView();
 
         binding.btnAddBanner.setOnClickListener(this);
+        binding.btnBack.setOnClickListener(this);
     }
 
     private void setupRecyclerView() {
@@ -55,6 +56,8 @@ public class BannerActivity extends AppCompatActivity implements View.OnClickLis
         if (view.getId() == R.id.btnAddBanner) {
             Intent intent = new Intent(this, BannerFormActivity.class);
             startActivity(intent);
+        } else if (view.getId() == R.id.btnBack) {
+            finish();
         }
     }
 

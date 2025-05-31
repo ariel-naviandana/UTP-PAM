@@ -1,6 +1,7 @@
 package com.example.hercules77;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerViewHolder> {
@@ -117,44 +120,66 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                        String filename = "banner_" + judulBanner.replaceAll("[^a-zA-Z0-9]", "_") + "_" + System.currentTimeMillis() + ".jpg";
+
+                        OutputStream fos;
+                        Uri imageUri;
+
                         try {
-                            File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Banners");
-                            if (!directory.exists() && !directory.mkdirs()) {
-                                Toast.makeText(context, "Gagal membuat direktori penyimpanan", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                ContentValues values = new ContentValues();
+                                values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+                                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                                values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Banners");
 
-                            String filename = "banner_" + judulBanner.replaceAll("[^a-zA-Z0-9]", "_") + "_" + System.currentTimeMillis() + ".jpg";
-                            File file = new File(directory, filename);
+                                Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                                if (uri == null) {
+                                    Toast.makeText(context, "Gagal membuat entri media", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
-                            try (FileOutputStream out = new FileOutputStream(file)) {
-                                resource.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                            }
-
-                            Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(fileUri, "image/*");
-                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                                context.startActivity(Intent.createChooser(intent, "Buka Gambar"));
+                                fos = context.getContentResolver().openOutputStream(uri);
+                                imageUri = uri;
                             } else {
-                                Toast.makeText(context, "Tidak ada aplikasi untuk membuka gambar", Toast.LENGTH_SHORT).show();
+                                File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Banners");
+                                if (!directory.exists() && !directory.mkdirs()) {
+                                    Toast.makeText(context, "Gagal membuat folder", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                File file = new File(directory, filename);
+                                fos = new FileOutputStream(file);
+                                imageUri = Uri.fromFile(file);
+
+                                // Menambahkan ke Galeri manual
+                                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, imageUri);
+                                context.sendBroadcast(mediaScanIntent);
                             }
 
-                            Toast.makeText(context, "Gambar disimpan di: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                            if (fos != null) {
+                                resource.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                fos.flush();
+                                fos.close();
+
+                                Toast.makeText(context, "Gambar berhasil diunduh", Toast.LENGTH_LONG).show();
+                            }
+
+                            // Optional: Buka gambar
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setDataAndType(imageUri, "image/*");
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                                context.startActivity(Intent.createChooser(intent, "Lihat gambar dengan"));
+                            }
 
                         } catch (IOException e) {
                             Toast.makeText(context, "Gagal menyimpan gambar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
-                    public void onLoadFailed(@NonNull Exception e) {
-                        Toast.makeText(context, "Gagal mengunduh gambar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
                     @Override
-                    public void onLoadCleared(@NonNull Drawable placeholder) {}
+                    public void onLoadCleared(@NonNull Drawable placeholder) {
+                    }
                 });
     }
 
