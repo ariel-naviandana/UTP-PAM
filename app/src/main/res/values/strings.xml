@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Hercules77</string>
+    <string name="slotresult">You Won:</string>
+    <string name="winningvalue">0</string>
 </resources>
