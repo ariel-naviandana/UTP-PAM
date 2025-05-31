@@ -22,7 +22,7 @@
             android:scaleType="centerCrop"
             android:background="@color/gray_light"
             android:contentDescription="Gambar Banner"
-            app:srcCompat="@drawable/ic_banner_placeholder" />
+            android:src="@drawable/ic_banner_placeholder"/>
 
         <!-- Banner Title -->
         <TextView
@@ -33,7 +33,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="Promo Spesial Akhir Tahun" />
+            android:text="Promo Spesial Akhir Tahun" />
 
         <!-- Banner Description -->
         <TextView
@@ -43,7 +43,7 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/gray_dark"
             android:textSize="14sp"
-            tools:text="Diskon hingga 50% untuk semua produk selama bulan Desember" />
+            android:text="Diskon hingga 50% untuk semua produk selama bulan Desember" />
 
         <!-- Action Buttons -->
         <LinearLayout
@@ -61,8 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Edit"
-                android:textColor="@color/colorPrimary"
-                app:iconTint="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary" />
 
             <!-- Delete Button -->
             <com.google.android.material.button.MaterialButton
@@ -72,8 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Hapus"
-                android:textColor="@color/red"
-                app:iconTint="@color/red" />
+                android:textColor="@color/red" />
 
             <!-- Download Button -->
             <com.google.android.material.button.MaterialButton
@@ -83,8 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Download"
-                android:textColor="@color/colorPrimaryDark"
-                app:iconTint="@color/colorPrimaryDark" />
+                android:textColor="@color/colorPrimaryDark" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
