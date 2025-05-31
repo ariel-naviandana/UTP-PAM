@@ -2,4 +2,6 @@
     <string name="app_name">Hercules77</string>
     <string name="slotresult">You Won:</string>
     <string name="winningvalue">0</string>
+    <string name="manajemen_event">Manajemen Event</string>
+    <string name="tambah_event">Tambah Event</string>
 </resources>
