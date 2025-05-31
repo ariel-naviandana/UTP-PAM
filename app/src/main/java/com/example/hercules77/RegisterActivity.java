@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 
+import java.util.UUID;
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText etUsername, etPassword;
@@ -27,11 +29,12 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             String user = etUsername.getText().toString();
             String pass = etPassword.getText().toString();
+            String id = UUID.randomUUID().toString();
 
             if (user.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show();
             } else {
-                boolean success = db.registerUser(user, pass);
+                boolean success = db.registerUser(id, user, pass);
                 if (success) {
                     Toast.makeText(this, "Register berhasil!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, LoginActivity.class));
