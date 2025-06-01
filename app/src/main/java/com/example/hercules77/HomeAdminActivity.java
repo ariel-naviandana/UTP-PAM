@@ -95,7 +95,7 @@ public class HomeAdminActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Izin penyimpanan diterima", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Izin penyimpanan ditolak", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this, "Izin penyimpanan ditolak", Toast.LENGTH_SHORT).show();
             }
         }
     }

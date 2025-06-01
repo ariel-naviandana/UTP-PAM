@@ -4,58 +4,80 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
-
-    EditText etUsername, etPassword;
+    EditText etUsernameReg, etPasswordReg, etEmailReg;
     Button btnRegister, btnBack;
-    DBHelper db;
+    FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // GANTI ID SESUAI DENGAN XML!
-        etUsername = findViewById(R.id.etUsernameReg);
-        etPassword = findViewById(R.id.etPasswordReg);
+        etUsernameReg = findViewById(R.id.etUsernameReg);
+        etEmailReg = findViewById(R.id.etEmailReg);
+        etPasswordReg = findViewById(R.id.etPasswordReg);
         btnRegister = findViewById(R.id.btnRegister);
         btnBack = findViewById(R.id.btnBack);
 
-        db = new DBHelper(this);
+        // Inisialisasi Firebase Authentication dan Firestore
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
+        // Tombol register
         btnRegister.setOnClickListener(v -> {
-            String user = etUsername.getText().toString();
-            String pass = etPassword.getText().toString();
+            String username = etUsernameReg.getText().toString().trim();
+            String email = etEmailReg.getText().toString().trim();
+            String password = etPasswordReg.getText().toString().trim();
 
-            if (user.isEmpty() || pass.isEmpty()) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show();
-            } else {
-                boolean success = db.registerUser(user, pass);
-                if (success) {
-                    Toast.makeText(this, "Register berhasil!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(this, "Username sudah digunakan", Toast.LENGTH_SHORT).show();
-                }
+                return;
             }
+
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnSuccessListener(authResult -> {
+                        // Simpan data ke Firestore
+                        String userId = mAuth.getCurrentUser().getUid();
+                        Map<String, Object> userData = new HashMap<>();
+                        userData.put("username", username);
+                        userData.put("email", email);
+                        userData.put("status", "aktif");
+                        userData.put("fotoProfilUrl", "");
+
+                        db.collection("users").document(userId)
+                                .set(userData)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(this, "Register berhasil!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(this, LoginActivity.class));
+                                    finish();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Gagal simpan data: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                );
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Gagal register: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
         });
 
+        // Tombol kembali
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
-        }); // Tombol kembali ke Login
+        });
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         finish();
     }
 }

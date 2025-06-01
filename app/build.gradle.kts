@@ -37,12 +37,17 @@ android {
 }
 
 dependencies {
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation ("com.google.firebase:firebase-firestore:24.9.1")
+    implementation ("com.google.firebase:firebase-auth:22.3.1")
 
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.firestore)
+    // implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
