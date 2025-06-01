@@ -5,6 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WinHistoryActivity">
+    tools:context=".WinHistoryActivity"
+    android:padding="16dp">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerWinHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
