@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.ViewHolder> {
+
     public interface OnItemClickListener {
         void onViewImage(String imageUrl);
         void onDelete(String id);
+        void onVerify(String id, boolean currentStatus);
+        void onDownload(String imageUrl);
     }
 
     private List<WinHistory> list;
@@ -28,16 +31,19 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUser, txtJumlah, txtTanggal;
-        Button btnView, btnDelete;
+        TextView txtUser, txtJumlah, txtTanggal, txtStatus;
+        Button btnView, btnDelete, btnVerify, btnDownload;
 
         public ViewHolder(View itemView) {
             super(itemView);
             txtUser = itemView.findViewById(R.id.txtUser);
             txtJumlah = itemView.findViewById(R.id.txtJumlahMenang);
             txtTanggal = itemView.findViewById(R.id.txtTanggalMenang);
+            txtStatus = itemView.findViewById(R.id.txtStatusVerified);
             btnView = itemView.findViewById(R.id.btnViewImage);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnVerify = itemView.findViewById(R.id.btnVerify);
+            btnDownload = itemView.findViewById(R.id.btnDownload);
         }
     }
 
@@ -54,8 +60,16 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
         holder.txtJumlah.setText("Jumlah Menang: " + item.getJumlahMenang());
         holder.txtTanggal.setText("Tanggal: " + item.getTanggalMenang());
 
+        // Tampilkan status verifikasi
+        holder.txtStatus.setText(item.isVerified() ? "Status: Verified" : "Status: Not Verified");
+
         holder.btnView.setOnClickListener(v -> listener.onViewImage(item.getBuktiGambarUrl()));
         holder.btnDelete.setOnClickListener(v -> listener.onDelete(item.getId()));
+
+        holder.btnVerify.setText(item.isVerified() ? "Unverify" : "Verify");
+        holder.btnVerify.setOnClickListener(v -> listener.onVerify(item.getId(), item.isVerified()));
+
+        holder.btnDownload.setOnClickListener(v -> listener.onDownload(item.getBuktiGambarUrl()));
     }
 
     @Override
@@ -63,4 +77,3 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
         return list.size();
     }
 }
-

@@ -38,6 +38,7 @@ android {
 
 dependencies {
 
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -48,4 +49,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("com.google.firebase:firebase-firestore:24.10.0")
+    implementation ("com.google.firebase:firebase-storage:20.3.0")
+
 }

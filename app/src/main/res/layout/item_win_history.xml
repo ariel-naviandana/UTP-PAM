@@ -10,15 +10,27 @@
     <TextView android:id="@+id/txtUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="User ID" />
 
     <TextView android:id="@+id/txtJumlahMenang"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Jumlah Menang" />
 
     <TextView android:id="@+id/txtTanggalMenang"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Tanggal Menang" />
+
+    <TextView
+        android:id="@+id/txtStatusVerified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status: Belum diverifikasi"
+        android:textColor="#FF0000"
+        android:textStyle="italic"
+        android:layout_marginTop="4dp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -32,6 +44,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lihat Bukti" />
+
+        <Button
+            android:id="@+id/btnDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:layout_marginStart="8dp" />
+
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verifikasi"
+            android:layout_marginStart="8dp" />
 
         <Button
             android:id="@+id/btnDelete"
