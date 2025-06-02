@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.Timestamp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class WinHistoryActivity extends AppCompatActivity {
 
@@ -48,18 +50,23 @@ public class WinHistoryActivity extends AppCompatActivity {
                 String id = doc.getId();
                 String idUser = doc.getString("idUser");
                 Long jumlahMenang = doc.getLong("jumlahMenang");
-                String tanggalMenang = doc.getString("tanggalMenang");
+                Timestamp tanggalMenang = doc.getTimestamp("tanggalMenang");
                 String buktiGambarUrl = doc.getString("buktiGambarUrl");
                 String status = doc.getString("status");
                 Boolean isVerified = doc.getBoolean("isVerified");
 
                 if (status == null) status = "";
 
+                // Format tanggal ke string (misalnya: 02 Juni 2025)
+                String tanggalMenangStr = tanggalMenang != null
+                        ? new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID")).format(tanggalMenang.toDate())
+                        : "";
+
                 winHistoryList.add(new WinHistory(
                         id,
                         idUser != null ? idUser : "",
                         jumlahMenang != null ? jumlahMenang.intValue() : 0,
-                        tanggalMenang != null ? tanggalMenang : "",
+                        tanggalMenangStr,
                         buktiGambarUrl != null ? buktiGambarUrl : "",
                         status,
                         isVerified != null ? isVerified : false
@@ -105,7 +112,6 @@ public class WinHistoryActivity extends AppCompatActivity {
                 Toast.makeText(this, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
         );
     }
-
 
     private void showDeleteConfirmation(String id) {
         new AlertDialog.Builder(this)

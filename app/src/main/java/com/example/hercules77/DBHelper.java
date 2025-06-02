@@ -1,84 +1,76 @@
 package com.example.hercules77;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
-public class DBHelper extends SQLiteOpenHelper {
+import androidx.annotation.NonNull;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DBHelper {
+    private final FirebaseFirestore db;
+    private final Context context;
 
     public DBHelper(Context context) {
-        super(context, "UTP.db", null, 1);
+        this.context = context;
+        this.db = FirebaseFirestore.getInstance();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS user(id TEXT PRIMARY KEY, username TEXT, password TEXT)");
+    /**
+     * Menambahkan data kemenangan ke Firestore
+     */
+    public void insertWinHistory(String idUser, int jumlahMenang, String tanggalMenang, String buktiGambarUrl) {
+        Map<String, Object> history = new HashMap<>();
+        history.put("idUser", idUser);
+        history.put("jumlahMenang", jumlahMenang);
+        history.put("tanggalMenang", tanggalMenang);
+        history.put("buktiGambarUrl", buktiGambarUrl);
+        history.put("status", "pending");
+        history.put("isVerified", false);
 
-        // Tambahan: Tabel win_history
-        db.execSQL("CREATE TABLE IF NOT EXISTS win_history (" +
-                "id TEXT PRIMARY KEY, " +
-                "idUser TEXT, " +
-                "jumlahMenang INTEGER, " +
-                "tanggalMenang TEXT, " +
-                "buktiGambarUrl TEXT)");
+        db.collection("histories")
+                .add(history)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(context, "Riwayat kemenangan berhasil disimpan", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Gagal menyimpan riwayat: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS user");
-        db.execSQL("DROP TABLE IF EXISTS win_history");
-        onCreate(db);
+    /**
+     * Memperbarui status verifikasi (true / false)
+     */
+    public void updateVerificationStatus(String historyId, boolean isVerified) {
+        Map<String, Object> update = new HashMap<>();
+        update.put("isVerified", isVerified);
+
+        db.collection("histories")
+                .document(historyId)
+                .update(update)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Status verifikasi diperbarui", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Gagal memperbarui status: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
-    // Fungsi insert user
-    public boolean insertUser(String id, String username, String password) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id", id);
-        values.put("username", username);
-        values.put("password", password);
-        long result = db.insert("user", null, values);
-        return result != -1;
-    }
-
-    // Alias: registerUser agar tidak error di RegisterActivity
-    public boolean registerUser(String id, String username, String password) {
-        return insertUser(id, username, password);
-    }
-
-    // Fungsi login
-    public boolean checkUser(String username, String password) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM user WHERE username = ? AND password = ?", new String[]{username, password});
-        boolean exists = cursor.getCount() > 0;
-        cursor.close();
-        return exists;
-    }
-
-    // Tambahan: Fungsi insert win_history
-    public boolean insertWinHistory(String id, String idUser, int jumlahMenang, String tanggalMenang, String buktiGambarUrl) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("id", id);
-        values.put("idUser", idUser);
-        values.put("jumlahMenang", jumlahMenang);
-        values.put("tanggalMenang", tanggalMenang);
-        values.put("buktiGambarUrl", buktiGambarUrl);
-        long result = db.insert("win_history", null, values);
-        return result != -1;
-    }
-
-    // Tambahan: Ambil semua data win_history
-    public Cursor getAllWinHistory() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM win_history", null);
-    }
-
-    // Tambahan: Hapus data win_history berdasarkan id
-    public int deleteWinHistory(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("win_history", "id = ?", new String[]{id});
+    /**
+     * Menghapus data riwayat berdasarkan ID dokumen
+     */
+    public void deleteWinHistory(String historyId) {
+        db.collection("histories")
+                .document(historyId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Riwayat kemenangan berhasil dihapus", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Gagal menghapus riwayat: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

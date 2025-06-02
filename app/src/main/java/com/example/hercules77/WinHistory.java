@@ -1,5 +1,7 @@
 package com.example.hercules77;
 
+import com.google.firebase.Timestamp;
+
 public class WinHistory {
     private String id;
     private String idUser;
@@ -7,10 +9,10 @@ public class WinHistory {
     private String tanggalMenang;
     private String buktiGambarUrl;
     private String status;
-    boolean isVerified;
+    private boolean isVerified;
 
     public WinHistory() {
-        // Required by Firebase
+        // Diperlukan oleh Firestore
     }
 
     public WinHistory(String id, String idUser, int jumlahMenang, String tanggalMenang, String buktiGambarUrl, String status, boolean isVerified) {
@@ -23,7 +25,6 @@ public class WinHistory {
         this.isVerified = isVerified;
     }
 
-    // Getter & Setter
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -42,11 +43,6 @@ public class WinHistory {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.isVerified = verified;
-    }
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
 }

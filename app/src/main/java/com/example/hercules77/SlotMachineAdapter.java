@@ -1,9 +1,7 @@
 package com.example.hercules77;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -33,10 +31,16 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
     private ArrayList<SlotMachine> slotMachineList;
     private FirebaseFirestore db;
     private Context context;
+    private OnPlayListener onPlayListener;
 
-    public SlotMachineAdapter(ArrayList<SlotMachine> slotMachineList, FirebaseFirestore db) {
+    public interface OnPlayListener {
+        void onPlay(SlotMachine slotMachine);
+    }
+
+    public SlotMachineAdapter(ArrayList<SlotMachine> slotMachineList, FirebaseFirestore db, OnPlayListener onPlayListener) {
         this.slotMachineList = slotMachineList;
         this.db = db;
+        this.onPlayListener = onPlayListener;
     }
 
     @NonNull
@@ -57,7 +61,6 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
             Glide.with(context)
                     .load(slotMachine.getGambarUrl())
                     .placeholder(R.drawable.ic_slot)
-                    .error(R.drawable.ic_slot)
                     .into(holder.ivGambar);
         } else {
             holder.ivGambar.setImageResource(R.drawable.ic_slot);
@@ -70,7 +73,22 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
         });
 
         holder.btnDeleteSlotMachine.setOnClickListener(v -> {
-            showDeleteConfirmationDialog(context, slotMachine, position);
+            new AlertDialog.Builder(context)
+                    .setTitle("Hapus Mesin Slot")
+                    .setMessage("Yakin ingin menghapus mesin \"" + slotMachine.getNamaMesin() + "\"?")
+                    .setPositiveButton("Hapus", (dialog, which) -> {
+                        db.collection("slot_machines").document(slotMachine.getId())
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(context, "Berhasil dihapus", Toast.LENGTH_SHORT).show();
+                                    slotMachineList.remove(position);
+                                    notifyItemRemoved(position);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(context, "Gagal menghapus", Toast.LENGTH_SHORT).show());
+                    })
+                    .setNegativeButton("Batal", null)
+                    .show();
         });
 
         holder.btnDownloadSlotMachine.setOnClickListener(v -> {
@@ -78,40 +96,17 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
                 Toast.makeText(context, "Tidak ada gambar untuk diunduh", Toast.LENGTH_SHORT).show();
                 return;
             }
-            downloadImage(context, slotMachine.getGambarUrl(), slotMachine.getNamaMesin());
+            downloadImage(slotMachine.getGambarUrl(), slotMachine.getNamaMesin());
+        });
+
+        holder.btnPlaySlotMachine.setOnClickListener(v -> {
+            if (onPlayListener != null) {
+                onPlayListener.onPlay(slotMachine);
+            }
         });
     }
 
-    private void showDeleteConfirmationDialog(Context context, SlotMachine slotMachine, int position) {
-        new AlertDialog.Builder(context)
-                .setTitle("Konfirmasi Penghapusan")
-                .setMessage("Apakah Anda benar-benar ingin menghapus mesin slot \"" + slotMachine.getNamaMesin() + "\"? Tindakan ini tidak dapat dibatalkan.")
-                .setPositiveButton("Hapus", (dialog, which) -> {
-                    db.collection("slot_machines").document(slotMachine.getId())
-                            .delete()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(context, "Mesin slot \"" + slotMachine.getNamaMesin() + "\" berhasil dihapus", Toast.LENGTH_SHORT).show();
-                                slotMachineList.remove(position);
-                                notifyItemRemoved(position);
-                                notifyItemRangeChanged(position, slotMachineList.size());
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(context, "Gagal menghapus mesin slot: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
-                .setCancelable(false)
-                .show();
-    }
-
-    private void downloadImage(Context context, String imageUrl, String namaMesin) {
-        // Check storage permission for Android < 13
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Izin penyimpanan diperlukan", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void downloadImage(String imageUrl, String namaMesin) {
         Glide.with(context)
                 .asBitmap()
                 .load(imageUrl)
@@ -119,41 +114,21 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
                         try {
-                            // Use app-specific external storage (no permission needed for Android 10+)
-                            File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "SlotMachines");
-                            if (!directory.exists() && !directory.mkdirs()) {
-                                Toast.makeText(context, "Gagal membuat direktori penyimpanan", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            String filename = "slot_" + namaMesin.replaceAll("[^a-zA-Z0-9]", "_") + "_" + System.currentTimeMillis() + ".jpg";
-                            File file = new File(directory, filename);
-
+                            File dir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "SlotMachines");
+                            if (!dir.exists()) dir.mkdirs();
+                            File file = new File(dir, "slot_" + namaMesin + ".jpg");
                             try (FileOutputStream out = new FileOutputStream(file)) {
                                 resource.compress(Bitmap.CompressFormat.JPEG, 100, out);
                             }
 
-                            // Notify user and provide option to view/share
-                            Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+                            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
                             Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(fileUri, "image/*");
+                            intent.setDataAndType(uri, "image/*");
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                                context.startActivity(Intent.createChooser(intent, "Buka Gambar"));
-                            } else {
-                                Toast.makeText(context, "Tidak ada aplikasi untuk membuka gambar", Toast.LENGTH_SHORT).show();
-                            }
-
-                            Toast.makeText(context, "Gambar disimpan di: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
+                            context.startActivity(Intent.createChooser(intent, "Lihat Gambar"));
                         } catch (IOException e) {
-                            Toast.makeText(context, "Gagal menyimpan gambar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Gagal menyimpan gambar", Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    public void onLoadFailed(@NonNull Exception e) {
-                        Toast.makeText(context, "Gagal mengunduh gambar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -169,7 +144,7 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
     public static class SlotMachineViewHolder extends RecyclerView.ViewHolder {
         TextView tvNamaMesin, tvTipe;
         ImageView ivGambar;
-        View btnEditSlotMachine, btnDeleteSlotMachine, btnDownloadSlotMachine;
+        View btnEditSlotMachine, btnDeleteSlotMachine, btnDownloadSlotMachine, btnPlaySlotMachine;
 
         public SlotMachineViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -179,6 +154,7 @@ public class SlotMachineAdapter extends RecyclerView.Adapter<SlotMachineAdapter.
             btnEditSlotMachine = itemView.findViewById(R.id.btnEditSlotMachine);
             btnDeleteSlotMachine = itemView.findViewById(R.id.btnDeleteSlotMachine);
             btnDownloadSlotMachine = itemView.findViewById(R.id.btnDownloadSlotMachine);
+            btnPlaySlotMachine = itemView.findViewById(R.id.btnPlaySlotMachine);
         }
     }
 }

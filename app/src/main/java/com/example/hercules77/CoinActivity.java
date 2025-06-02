@@ -10,6 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class CoinActivity extends AppCompatActivity {
@@ -21,6 +28,29 @@ public class CoinActivity extends AppCompatActivity {
     Random random;
     int jumlahUang;
     String lastResult = "";
+
+    private void simpanKeFirestore(boolean isWin, int jumlahMenang) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getUid();
+
+        if (userId == null) return;
+
+        Map<String, Object> history = new HashMap<>();
+        history.put("idUser", userId);
+        history.put("gameType", "COIN_FLIP");
+        history.put("isVerified", false);
+        history.put("jumlahMenang", isWin ? jumlahMenang : 0); // kalah = 0
+        history.put("tanggalMenang", FieldValue.serverTimestamp());
+
+        db.collection("histories")
+                .add(history)
+                .addOnSuccessListener(documentReference -> {
+                    // opsional: log berhasil
+                })
+                .addOnFailureListener(e -> {
+                    // opsional: log gagal
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +130,12 @@ public class CoinActivity extends AppCompatActivity {
             resultText.setText("Anda Menang!\nHasil: " + actualResult + "\nUang yang Anda dapatkan: " + totalMenang);
             resultText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             lastResult = "WIN";
+            simpanKeFirestore(true, totalMenang); // simpan sebagai menang
         } else {
             resultText.setText("Anda Kalah!\nHasil: " + actualResult + "\nUang Anda hangus 😢");
             resultText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             lastResult = "LOSE";
+            simpanKeFirestore(false, 0); // simpan sebagai kalah
         }
     }
 }

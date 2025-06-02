@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
-    private ArrayList<History> historyList;
+    private ArrayList<History> historyList; // ✅ gunakan class History milikmu
     private Context context;
 
     public HistoryAdapter(Context context, ArrayList<History> historyList) {
@@ -38,15 +38,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 binding.txtGameType.setText("Game: Slot");
             }
 
-            binding.txtTimestamp.setText("Waktu: " + history.getTimestamp());
+            binding.txtTimestamp.setText("Waktu: " + history.getTanggalMenang());
 
-            String resultText = history.isWin()
-                    ? "Menang! +Rp" + history.getAmount()
-                    : "Kalah! -Rp" + history.getAmount();
-
+            String resultText = "Menang! +Rp" + history.getJumlahMenang();
             binding.txtResult.setText(resultText);
 
-            int colorRes = history.isWin() ? android.R.color.holo_green_light : android.R.color.holo_red_light;
+            int colorRes = history.isVerified() ? android.R.color.holo_green_light : android.R.color.holo_red_light;
             binding.getRoot().setCardBackgroundColor(context.getResources().getColor(colorRes));
         }
     }

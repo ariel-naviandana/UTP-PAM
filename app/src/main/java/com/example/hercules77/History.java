@@ -1,36 +1,34 @@
 package com.example.hercules77;
 
+import com.google.firebase.Timestamp;
+
 public class History {
-    public enum GameType {
-        COIN_FLIP,
-        SLOT
-    }
+    public enum GameType { SLOT, COIN_FLIP }
 
     private GameType gameType;
-    private String timestamp;
-    private boolean isWin;
-    private int amount;
+    private Timestamp tanggalMenang;
+    private boolean isVerified;
+    private int jumlahMenang;
 
-    public History(GameType gameType, String timestamp, boolean isWin, int amount) {
+    // Constructor kosong diperlukan untuk Firestore
+    public History() {}
+
+    public History(GameType gameType, Timestamp tanggalMenang, boolean isVerified, int jumlahMenang) {
         this.gameType = gameType;
-        this.timestamp = timestamp;
-        this.isWin = isWin;
-        this.amount = amount;
+        this.tanggalMenang = tanggalMenang;
+        this.isVerified = isVerified;
+        this.jumlahMenang = jumlahMenang;
     }
 
-    public GameType getGameType() {
-        return gameType;
-    }
+    public GameType getGameType() { return gameType; }
+    public void setGameType(GameType gameType) { this.gameType = gameType; }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
+    public Timestamp getTanggalMenang() { return tanggalMenang; }
+    public void setTanggalMenang(Timestamp tanggalMenang) { this.tanggalMenang = tanggalMenang; }
 
-    public boolean isWin() {
-        return isWin;
-    }
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
 
-    public int getAmount() {
-        return amount;
-    }
+    public int getJumlahMenang() { return jumlahMenang; }
+    public void setJumlahMenang(int jumlahMenang) { this.jumlahMenang = jumlahMenang; }
 }
