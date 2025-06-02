@@ -210,7 +210,7 @@ public class WinHistoryActivity extends AppCompatActivity {
     }
 
     private void uploadImageToCloudinary(File file) {
-        String uploadPreset = "pam-project"; // TODO: Ganti dengan preset Cloudinary Anda
+        String uploadPreset = "pam-project";
 
         CloudinaryUploader.uploadImage(file, uploadPreset, new Callback() {
             @Override
@@ -231,7 +231,7 @@ public class WinHistoryActivity extends AppCompatActivity {
                         if (selectedItemPosition != -1) {
                             WinHistory item = winHistoryList.get(selectedItemPosition);
                             db.collection("histories").document(item.getId())
-                                    .update("buktiGambarUrl", imageUrl)
+                                    .update("imageUrl", imageUrl)
                                     .addOnSuccessListener(unused -> runOnUiThread(() -> {
                                         Toast.makeText(WinHistoryActivity.this, "Upload berhasil dan data diperbarui", Toast.LENGTH_SHORT).show();
                                         loadWinHistories();

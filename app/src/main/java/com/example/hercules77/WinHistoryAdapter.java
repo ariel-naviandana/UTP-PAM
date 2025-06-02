@@ -94,12 +94,15 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
 
         holder.btnDownload.setOnClickListener(v -> listener.onDownload(item.getImageUrl()));
 
-        // Load gambar bukti dengan Glide
-        Glide.with(context)
-                .load(item.getImageUrl())
-                .into(holder.imgBukti);
-
-        // Klik gambar untuk upload gambar baru
+        String imageUrl = item.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_banner_placeholder) // opsional: tampilkan saat loading
+                    .into(holder.imgBukti);
+        } else {
+            holder.imgBukti.setImageResource(R.drawable.ic_banner_placeholder); // gambar default saat kosong
+        }
         holder.imgBukti.setOnClickListener(v -> listener.onImageClicked(position));
     }
 
