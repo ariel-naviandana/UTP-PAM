@@ -6,10 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
 
-import com.example.hercules77.R;
-
 public class LoginActivity extends AppCompatActivity {
-
     EditText etUsername, etPassword;
     Button btnLogin, btnToRegister;
     DBHelper db;
@@ -26,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new DBHelper(this);
 
+        // Tombol login
         btnLogin.setOnClickListener(v -> {
             String user = etUsername.getText().toString();
             String pass = etPassword.getText().toString();
@@ -33,21 +31,25 @@ public class LoginActivity extends AppCompatActivity {
             if (db.checkUser(user, pass)) {
                 Toast.makeText(this, "Login berhasil!", Toast.LENGTH_SHORT).show();
 
-                // Simpan sesi login (misal pakai SharedPreferences)
+                // Ambil data user lengkap
+                User userData = db.getUserData(user);
+
                 SharedPreferences prefs = getSharedPreferences("login_session", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("username", user);
+
+                editor.putString("username", userData.username);
+                editor.putString("email", userData.email);
+                editor.putString("status", userData.status);
+                editor.putString("fotoProfilUrl", userData.fotoProfilUrl);
                 editor.apply();
 
-                // Gunakan FLAG agar semua activity sebelumnya dihapus
+                // Navigasi ke Home sesuai user
                 if (user.equals("admin")) {
                     Intent intent = new Intent(this, HomeAdminActivity.class);
-                    intent.putExtra("username", user);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("username", user);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
@@ -56,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Tombol register
         btnToRegister.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);

@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 
-import java.util.UUID;
-
 public class RegisterActivity extends AppCompatActivity {
-
-    EditText etUsername, etPassword;
+    EditText etUsernameReg, etPasswordReg, etEmailReh;
     Button btnRegister, btnBack;
     DBHelper db;
 
@@ -18,23 +15,24 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // GANTI ID SESUAI DENGAN XML!
-        etUsername = findViewById(R.id.etUsernameReg);
-        etPassword = findViewById(R.id.etPasswordReg);
+        etUsernameReg = findViewById(R.id.etUsernameReg);
+        etEmailReh = findViewById(R.id.etEmailReg);
+        etPasswordReg = findViewById(R.id.etPasswordReg);
         btnRegister = findViewById(R.id.btnRegister);
         btnBack = findViewById(R.id.btnBack);
 
         db = new DBHelper(this);
 
+        // Tombol register
         btnRegister.setOnClickListener(v -> {
-            String user = etUsername.getText().toString();
-            String pass = etPassword.getText().toString();
-            String id = UUID.randomUUID().toString();
+            String user = etUsernameReg.getText().toString();
+            String pass = etPasswordReg.getText().toString();
+            String email = etEmailReh.getText().toString();
 
-            if (user.isEmpty() || pass.isEmpty()) {
+            if (user.isEmpty() || pass.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show();
             } else {
-                boolean success = db.registerUser(id, user, pass);
+                boolean success = db.registerUser(user, pass, email); // ubah parameter
                 if (success) {
                     Toast.makeText(this, "Register berhasil!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, LoginActivity.class));
@@ -45,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Tombol kembali
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="40dp"
+        android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingBottom="16dp"
@@ -34,6 +34,15 @@
             android:textColor="@android:color/black"
             android:layout_weight="1" />
 
+        <ImageView
+            android:id="@+id/imgProfileIcon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_user_icon"
+            android:contentDescription="Profile Icon"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -43,8 +52,18 @@
         tools:listitem="@layout/item_home"
         android:layout_margin="8dp"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnLogout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
