@@ -2,23 +2,21 @@ package com.example.hercules77;
 
 public class WinHistory {
     private String id;
-    private String idUser;
-    private int jumlahMenang;
-    private String tanggalMenang;
-    private String buktiGambarUrl;
+    private String userId;
+    private long amount;
+    private String timestamp;       // simpan tanggal sebagai String hasil format dari Timestamp
+    private String imageUrl;
     private String status;
-    boolean isVerified;
+    private boolean isVerified;
 
-    public WinHistory() {
-        // Required by Firebase
-    }
+    public WinHistory() { }
 
-    public WinHistory(String id, String idUser, int jumlahMenang, String tanggalMenang, String buktiGambarUrl, String status, boolean isVerified) {
+    public WinHistory(String id, String userId, long amount, String timestamp, String imageUrl, String status, boolean isVerified) {
         this.id = id;
-        this.idUser = idUser;
-        this.jumlahMenang = jumlahMenang;
-        this.tanggalMenang = tanggalMenang;
-        this.buktiGambarUrl = buktiGambarUrl;
+        this.userId = userId;
+        this.amount = amount;
+        this.timestamp = timestamp;
+        this.imageUrl = imageUrl;
         this.status = status;
         this.isVerified = isVerified;
     }
@@ -27,26 +25,21 @@ public class WinHistory {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getIdUser() { return idUser; }
-    public void setIdUser(String idUser) { this.idUser = idUser; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
-    public int getJumlahMenang() { return jumlahMenang; }
-    public void setJumlahMenang(int jumlahMenang) { this.jumlahMenang = jumlahMenang; }
+    public long getAmount() { return amount; }
+    public void setAmount(long amount) { this.amount = amount; }
 
-    public String getTanggalMenang() { return tanggalMenang; }
-    public void setTanggalMenang(String tanggalMenang) { this.tanggalMenang = tanggalMenang; }
+    public String getTimestamp() { return timestamp; }
+    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 
-    public String getBuktiGambarUrl() { return buktiGambarUrl; }
-    public void setBuktiGambarUrl(String buktiGambarUrl) { this.buktiGambarUrl = buktiGambarUrl; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public boolean isVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.isVerified = verified;
-    }
+    public boolean isVerified() { return isVerified; }
+    public void setVerified(boolean verified) { isVerified = verified; }
 }
