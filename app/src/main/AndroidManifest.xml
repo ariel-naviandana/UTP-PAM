@@ -18,6 +18,12 @@
         android:theme="@style/Theme.Hercules77"
         tools:targetApi="31">
         <activity
+            android:name=".ImgPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TipsFormActivity"
+            android:exported="false" />
+        <activity
             android:name=".BannerFormActivity"
             android:exported="false" />
         <activity
