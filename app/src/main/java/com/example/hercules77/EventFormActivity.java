@@ -53,12 +53,41 @@ public class EventFormActivity extends AppCompatActivity {
         binding.btnSave.setOnClickListener(v-> saveEvent());
         binding.btnUploadImage.setOnClickListener(v-> openImagePicker());
 
+        eventId = getIntent().getStringExtra("EVENT_ID");
+        if (eventId != null) {
+            loadEventData(eventId);
+        }
+
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
                 Glide.with(this).load(imageUri).into(binding.ivPreview);
             }
         });
+    }
+
+    private void loadEventData(String eventId) {
+        db.collection("events").document(eventId)
+                .get().addOnSuccessListener(document ->{
+                    if (document.exists()) {
+                        binding.etNamaEvent.setText(document.getString("judulEvent"));
+                        binding.etDeskripsi.setText(document.getString("deskripsi"));
+                        tanggalMulai = document.getDate("tanggalMulai");
+                        tanggalAkhir = document.getDate("tanggalAkhir");
+
+                        if (tanggalMulai != null) {
+                            binding.etTanggalMulai.setText(sdf.format(tanggalMulai));
+                        }
+                        if (tanggalAkhir != null) {
+                            binding.etTanggalAkhir.setText(sdf.format(tanggalAkhir));
+                        }
+                        String savedImageUrl = document.getString("bannerUrl");
+                        if (savedImageUrl != null && !savedImageUrl.isEmpty()) {
+                            imageUrl = savedImageUrl;
+                            Glide.with(this).load(savedImageUrl).into(binding.ivPreview);
+                        }
+                    }
+                }).addOnFailureListener(e-> Toast.makeText(this, "Gagal memuat data event", Toast.LENGTH_SHORT).show());
     }
 
     private void saveEvent() {
