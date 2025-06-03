@@ -56,14 +56,16 @@
                 android:layout_marginEnd="8dp"
                 android:text="Hapus" />
 
-            <Button
-                android:id="@+id/btnDownloadSlotMachine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Download" />
-
         </LinearLayout>
+
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/btnDownloadSlotMachine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:text="Download" />
 
     </LinearLayout>
 
