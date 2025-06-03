@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +21,7 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
         void onDelete(String id);
         void onVerify(String id, boolean currentStatus);
         void onDownload(String imageUrl);
+        void onImageClicked(int position);
     }
 
     private List<WinHistory> list;
@@ -33,6 +37,7 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtUser, txtJumlah, txtTanggal, txtStatus;
         Button btnView, btnDelete, btnVerify, btnDownload;
+        ImageView imgBukti;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -44,6 +49,7 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
             btnDelete = itemView.findViewById(R.id.btnDelete);
             btnVerify = itemView.findViewById(R.id.btnVerify);
             btnDownload = itemView.findViewById(R.id.btnDownload);
+            imgBukti = itemView.findViewById(R.id.imgBukti);
         }
     }
 
@@ -56,20 +62,48 @@ public class WinHistoryAdapter extends RecyclerView.Adapter<WinHistoryAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         WinHistory item = list.get(position);
-        holder.txtUser.setText("User ID: " + item.getIdUser());
-        holder.txtJumlah.setText("Jumlah Menang: " + item.getJumlahMenang());
-        holder.txtTanggal.setText("Tanggal: " + item.getTanggalMenang());
 
-        // Tampilkan status verifikasi
+        // Set User ID
+        holder.txtUser.setText("User ID: " + item.getUserId());
+
+        // Set jumlah menang (amount)
+        holder.txtJumlah.setText("Jumlah Menang: " + item.getAmount());
+
+        // Parse timestamp String ke long dengan aman
+        String tanggal = "-";
+        try {
+            long timestamp = Long.parseLong(item.getTimestamp());
+            if (timestamp > 0) {
+                java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance();
+                tanggal = dateFormat.format(new java.util.Date(timestamp));
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        holder.txtTanggal.setText("Tanggal: " + tanggal);
+
+        // Set status verified
         holder.txtStatus.setText(item.isVerified() ? "Status: Verified" : "Status: Not Verified");
 
-        holder.btnView.setOnClickListener(v -> listener.onViewImage(item.getBuktiGambarUrl()));
+        // Tombol-tombol aksi
+        holder.btnView.setOnClickListener(v -> listener.onViewImage(item.getImageUrl()));
         holder.btnDelete.setOnClickListener(v -> listener.onDelete(item.getId()));
 
         holder.btnVerify.setText(item.isVerified() ? "Unverify" : "Verify");
         holder.btnVerify.setOnClickListener(v -> listener.onVerify(item.getId(), item.isVerified()));
 
-        holder.btnDownload.setOnClickListener(v -> listener.onDownload(item.getBuktiGambarUrl()));
+        holder.btnDownload.setOnClickListener(v -> listener.onDownload(item.getImageUrl()));
+
+        String imageUrl = item.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_banner_placeholder) // opsional: tampilkan saat loading
+                    .into(holder.imgBukti);
+        } else {
+            holder.imgBukti.setImageResource(R.drawable.ic_banner_placeholder); // gambar default saat kosong
+        }
+        holder.imgBukti.setOnClickListener(v -> listener.onImageClicked(position));
     }
 
     @Override
