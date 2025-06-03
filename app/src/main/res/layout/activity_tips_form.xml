@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/background">
+    tools:context=".TipsFormActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,12 +13,11 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Custom Header with Back Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:orientation="horizontal"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             android:gravity="center_vertical">
 
             <ImageView
@@ -32,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Form Banner"
+                android:text="Upload tips"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -47,9 +48,8 @@
             android:layout_marginTop="16dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="Tambah Banner Baru" />
+            android:text="Tambah tips and trick" />
 
-        <!-- Banner Image Preview -->
         <ImageView
             android:id="@+id/ivPreview"
             android:layout_width="match_parent"
@@ -60,13 +60,14 @@
             android:contentDescription="Preview Gambar Banner"
             app:srcCompat="@drawable/ic_banner_placeholder" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnUploadImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Unggah Gambar Banner"
+            android:text="Upload Gambar Tips"
             android:textAllCaps="false"
+            android:backgroundTint="@color/colorPrimaryDark"
             app:iconTint="@color/white" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -76,50 +77,48 @@
             app:counterEnabled="true"
             app:counterMaxLength="50">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etJudulBanner"
+                android:id="@+id/etJudulTips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Judul Banner"
+                android:hint="Judul"
                 android:inputType="textCapWords"
                 android:maxLength="50" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Deskripsi -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="200">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDeskripsi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Deskripsi Banner"
-                android:inputType="textMultiLine"
-                android:maxLength="200" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Link Promo -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLinkPromo"
+                android:id="@+id/etKategori"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Link Promo (Opsional)"
-                android:inputType="textUri" />
+                android:hint="Kategori"
+                android:maxLength="20"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Simpan Button -->
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="1000">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etIsiKonten"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Konten"
+                android:inputType="textMultiLine"
+                android:maxLength="1000" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Simpan Banner"
+            android:text="Simpan"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:textAllCaps="false"
             app:iconTint="@color/white" />
 
